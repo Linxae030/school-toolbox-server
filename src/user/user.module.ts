@@ -5,6 +5,7 @@ import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { JWT_CONFIG } from "@/utils/constants";
 import { User, UserSchema } from "./schema/user.schema";
+import JwtAuthStrategy from "@/utils/auth/jwtStrategy";
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { User, UserSchema } from "./schema/user.schema";
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, JwtAuthStrategy],
 })
 export class UserModule {}

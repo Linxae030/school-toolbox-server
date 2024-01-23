@@ -1,6 +1,9 @@
 export class SignupDTO {
-  /** 用户名 */
-  username: string;
+  /** 账户 */
+  account: string;
+
+  /** 昵称 */
+  nickname: string;
 
   /** 密码 */
   password: string;

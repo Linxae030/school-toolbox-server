@@ -7,10 +7,16 @@ import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
 })
 export class User {
   @Prop({
-    description: "用户名",
+    description: "账户",
     required: true,
   })
-  username: string;
+  account: string;
+
+  @Prop({
+    description: "昵称",
+    required: true,
+  })
+  nickname: string;
 
   @Prop({
     description: "加密的密码",

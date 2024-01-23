@@ -1,6 +1,6 @@
 export class LoginDTO {
   /** 用户名 */
-  username: string;
+  account: string;
 
   /** 密码 */
   password: string;

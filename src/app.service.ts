@@ -1,9 +1,9 @@
 import { Injectable, OnApplicationShutdown } from "@nestjs/common";
-import { disconnectDB } from "./utils/db/connect";
+import mongoose from "mongoose";
 
 @Injectable()
 export class AppService implements OnApplicationShutdown {
   async onApplicationShutdown() {
-    await disconnectDB();
+    await mongoose.disconnect();
   }
 }

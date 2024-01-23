@@ -40,6 +40,7 @@ module.exports = {
     "no-unused-vars": "off",
     "no-useless-constructor": "off",
     "no-empty-function": "off",
-    "no-console":"off"
+    "no-console":"off",
+    "no-shadow": "off"
   },
 };
