@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
+import * as _ from "lodash";
 
 interface DataWithMsg<T> {
   data: T;
@@ -26,7 +27,7 @@ export class ResponseSuccessInterceptor<T>
       map((response) => {
         return {
           code: 1,
-          msg: response.msg,
+          msg: response.msg ?? (response as unknown as string),
           data: response.data,
         };
       }),

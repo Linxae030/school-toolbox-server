@@ -14,11 +14,11 @@ export class ResponseFailedFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
     const rep = ctx.getResponse<Response>();
 
-    const status = exception.getStatus();
+    const status = (exception.getStatus && exception.getStatus()) || 400;
 
     rep.status(status).json({
       code: 0,
-      ret: exception.message,
+      ret: exception.message ?? exception,
       status,
       time: new Date(),
       path: req.url,

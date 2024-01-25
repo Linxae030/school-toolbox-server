@@ -1,4 +1,4 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateLinkDto } from "./create-link.dto";
+import { OmitAccount } from "@/utils";
+import { Link } from "../schema/link.schema";
 
-export class UpdateLinkDto extends PartialType(CreateLinkDto) {}
+export type UpdateLinkDto = Partial<OmitAccount<Link>>;

@@ -9,6 +9,7 @@ export class User {
   @Prop({
     description: "账户",
     required: true,
+    immutable: true,
   })
   account: string;
 

@@ -6,37 +6,46 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Request,
+  UseGuards,
 } from "@nestjs/common";
 import { LinkService } from "./link.service";
 import { CreateLinkDto } from "./dto/create-link.dto";
 import { UpdateLinkDto } from "./dto/update-link.dto";
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
+import { AuthWrappedRequest } from "@/utils/types/http";
 
+@UseGuards(JwtAuthGuard)
 @Controller("link")
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
-  @Post()
-  create(@Body() createLinkDto: CreateLinkDto) {
-    return this.linkService.create(createLinkDto);
+  @Post("create")
+  create(
+    @Body() createLinkDto: CreateLinkDto,
+    @Request() req: AuthWrappedRequest,
+  ) {
+    return this.linkService.create(createLinkDto, req.user.account);
   }
 
-  @Get()
-  findAll() {
-    return this.linkService.findAll();
+  @Post("findAll")
+  findAll(@Request() req: AuthWrappedRequest) {
+    return this.linkService.findAll(req.user.account);
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.linkService.findOne(+id);
+  @Post("find")
+  findOne(@Query("_id") _id: string) {
+    return this.linkService.findOne(_id);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateLinkDto: UpdateLinkDto) {
-    return this.linkService.update(+id, updateLinkDto);
+  @Post("update")
+  update(@Query("_id") _id: string, @Body() updateLinkDto: UpdateLinkDto) {
+    return this.linkService.update(_id, updateLinkDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.linkService.remove(+id);
+  @Post("delete")
+  remove(@Query("_id") _id: string) {
+    return this.linkService.remove(_id);
   }
 }

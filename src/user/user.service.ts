@@ -1,20 +1,15 @@
-import { BadRequestException, HttpException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcryptjs from "bcryptjs";
-import { JwtService } from "@nestjs/jwt";
 
 import { SignupDTO } from "./dto/signUp.dto";
-import { LoginDTO } from "./dto/login.dto";
 import { User } from "./schema/user.schema";
-import { genBaseErr, genBaseSuccess } from "@/utils/utils";
+import { genBaseErr } from "@/utils/utils";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User.name) private UserModel: Model<User>,
-    private readonly JwtService: JwtService,
-  ) {}
+  constructor(@InjectModel(User.name) private UserModel: Model<User>) {}
 
   async signUp(signupData: SignupDTO) {
     const { password, account, nickname } = signupData;
@@ -35,27 +30,19 @@ export class UserService {
     });
     if (!createdUser) return genBaseErr("用户注册失败");
 
-    return genBaseSuccess({}, "注册成功");
+    return "注册成功";
   }
 
-  async login(loginData: LoginDTO) {
-    const { account, password } = loginData;
-    const findUser = await this.UserModel.findOne({ account }).exec();
-    if (!findUser) return genBaseErr("尚未注册");
-    // 找到了对比密码
-    const compareRes: boolean = bcryptjs.compareSync(
-      password,
-      findUser.password,
-    );
-    // 密码不正确
-    if (!compareRes) return genBaseErr("密码不正确");
-
-    const payload = { account };
-    return genBaseSuccess(
+  async findOne(account: string) {
+    const findUser = await this.UserModel.findOne(
+      { account },
       {
-        token: this.JwtService.sign(payload),
+        account: 1,
+        nickname: 1,
+        password: 1,
       },
-      "登录成功",
-    );
+    ).exec();
+    if (!findUser) return genBaseErr("未找到用户");
+    return findUser;
   }
 }
