@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcryptjs from "bcryptjs";
-
-import { SignupDTO } from "./dto/signUp.dto";
 import { User } from "./schema/user.schema";
 import { genBaseErr } from "@/utils/utils";
+
+import type { SignupDTO } from "./dto/signUp.dto";
 
 @Injectable()
 export class UserService {
@@ -13,6 +13,7 @@ export class UserService {
 
   async signUp(signupData: SignupDTO) {
     const { password, account, nickname } = signupData;
+    console.log("signupData", signupData);
 
     if (!password || !nickname || !account) return genBaseErr("信息不完整");
 

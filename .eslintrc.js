@@ -41,6 +41,7 @@ module.exports = {
     "no-useless-constructor": "off",
     "no-empty-function": "off",
     "no-console":"off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "no-underscore-dangle": "off",
   },
 };

@@ -27,10 +27,22 @@ export class Link {
   direction: string;
 
   @Prop({
+    description: "所属分类",
+    required: true,
+    ref: "linkCate",
+  })
+  categoryId: string;
+
+  @Prop({
+    description: "背景颜色",
+    required: true,
+  })
+  bgColor: string;
+
+  @Prop({
     description: "链接图标展示方式",
     default: LinkIconDisplayModeEnum.FirstChar,
   })
   displayMode: LinkIconDisplayModeEnum;
 }
-
 export const LinkSchema = SchemaFactory.createForClass(Link);
