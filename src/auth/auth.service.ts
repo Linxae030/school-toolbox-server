@@ -22,11 +22,9 @@ export class AuthService {
       return genBaseErr("信息不完整");
     }
 
-    const user = (await this.userService.findOne(account)) as User;
+    const user = await this.userService.findOne(account);
+    if (!user || _.isEmpty(user)) return genBaseErr("未找到该用户");
 
-    if (_.isEmpty(user)) {
-      return genBaseErr("未找到该用户");
-    }
     const isValidPwd = await bcrypt.compare(password, user.password);
 
     if (!isValidPwd) {
@@ -34,6 +32,7 @@ export class AuthService {
     }
 
     const sanitizedUser = {
+      _id: user._id,
       account: user.account,
       nickname: user.nickname,
     };
@@ -42,7 +41,12 @@ export class AuthService {
 
   // 登录接口服务层
   async login(user: User) {
-    const payload = { account: user.account, nickname: user.nickname };
+    const payload = {
+      account: user.account,
+      nickname: user.nickname,
+      // @ts-expect-error 有的啊
+      _id: user._id,
+    };
     const token = this.jwtService.sign(payload);
     return genBaseSuccess({ token, ...payload }, "登陆成功");
   }

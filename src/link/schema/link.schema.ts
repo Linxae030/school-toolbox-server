@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose from "mongoose";
 import { LinkIconDisplayModeEnum } from "./types";
+import { LinkCate } from "./linkCate.schema";
 
 @Schema({
   timestamps: true,
@@ -9,10 +11,11 @@ export class Link {
   @Prop({
     description: "所属用户",
     required: true,
-    ref: "user",
+    ref: "User",
     immutable: true,
+    type: mongoose.Schema.Types.ObjectId,
   })
-  account: string;
+  user: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     description: "链接名",
@@ -29,9 +32,10 @@ export class Link {
   @Prop({
     description: "所属分类",
     required: true,
-    ref: "linkCate",
+    ref: "LinkCate",
+    type: mongoose.Schema.Types.ObjectId,
   })
-  categoryId: string;
+  categoryId: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     description: "背景颜色",

@@ -43,5 +43,7 @@ module.exports = {
     "no-console":"off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
+    "no-restricted-syntax": "off",
+    "no-await-in-loop": "off"
   },
 };

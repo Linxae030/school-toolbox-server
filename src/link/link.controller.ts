@@ -26,12 +26,12 @@ export class LinkController {
     @Body() createLinkDto: CreateLinkDto,
     @Request() req: AuthWrappedRequest,
   ) {
-    return this.linkService.createLink(createLinkDto, req.user.account);
+    return this.linkService.createLink(createLinkDto, req.user._id);
   }
 
   @Post("findAllLink")
   findAllLink(@Request() req: AuthWrappedRequest) {
-    return this.linkService.findAllLink(req.user.account);
+    return this.linkService.findAllLink(req.user._id);
   }
 
   @Post("findLink")
@@ -54,14 +54,12 @@ export class LinkController {
     @Body() createCateDto: CreateCateDto,
     @Request() req: AuthWrappedRequest,
   ) {
-    console.log("req.user.account", req.user);
-
-    return this.linkService.createCate(createCateDto, req.user.account);
+    return this.linkService.createCate(createCateDto, req.user._id);
   }
 
   @Post("findAllCate")
   findAllCate(@Request() req: AuthWrappedRequest) {
-    return this.linkService.findAllCate(req.user.account);
+    return this.linkService.findAllCate(req.user._id);
   }
 
   @Post("findCate")

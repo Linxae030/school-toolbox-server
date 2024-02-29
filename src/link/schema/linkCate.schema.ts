@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Link } from "./link.schema";
+import mongoose from "mongoose";
 
 @Schema({
   timestamps: true,
@@ -9,10 +9,11 @@ export class LinkCate {
   @Prop({
     description: "所属用户",
     required: true,
-    ref: "user",
+    ref: "User",
     immutable: true,
+    type: mongoose.Schema.Types.ObjectId,
   })
-  account: string;
+  user: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     description: "分类名",
@@ -23,8 +24,10 @@ export class LinkCate {
   @Prop({
     description: "分类中包含的链接",
     required: true,
+    ref: "Link",
+    type: [mongoose.Schema.Types.ObjectId],
   })
-  links: Link[];
+  links: mongoose.Schema.Types.ObjectId[];
 }
 
 export const LinkCateSchema = SchemaFactory.createForClass(LinkCate);

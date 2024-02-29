@@ -13,7 +13,6 @@ export class UserService {
 
   async signUp(signupData: SignupDTO) {
     const { password, account, nickname } = signupData;
-    console.log("signupData", signupData);
 
     if (!password || !nickname || !account) return genBaseErr("信息不完整");
 
