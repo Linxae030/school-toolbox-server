@@ -8,6 +8,7 @@ import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { ResumeModule } from "./resume/resume.module";
 import { TargetModule } from "./target/target.module";
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TargetModule } from "./target/target.module";
     AuthModule,
     ResumeModule,
     TargetModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

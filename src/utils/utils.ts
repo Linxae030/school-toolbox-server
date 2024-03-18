@@ -39,3 +39,4 @@ export function checkKeysInSchema(
 
   return invalidKeys.length === 0;
 }
+
