@@ -74,19 +74,22 @@ export class TargetService {
   async completeStage(targetId: string, stageId: string) {
     try {
       const res = await this.TargetModel.findById(targetId);
-
+      const { stages } = res;
       if (_.isNil(res)) return genBaseErr("目标不存在");
 
-      const findStage = res.stages.find(
+      const findStageIndex = res.stages.findIndex(
         (stage) => stage._id.toString() === stageId,
       );
-      if (!findStage) {
+      if (!findStageIndex) {
         return genBaseErr("未找到该阶段");
       }
       /** 完成stage */
-      findStage.status = StageStatus.DONE;
-      findStage.innerStepConfig.current =
-        findStage.innerStepConfig.items.length;
+      stages[findStageIndex].status = StageStatus.DONE;
+      stages[findStageIndex].innerStepConfig.current =
+        stages[findStageIndex].innerStepConfig.items.length;
+      // 将下一个赋为正在做
+      if (findStageIndex !== stages.length - 1)
+        stages[findStageIndex + 1].status = StageStatus.DOING;
       await res.save();
       return "阶段已完成";
     } catch (e) {
@@ -108,6 +111,12 @@ export class TargetService {
       }
       /** 完成stage */
       findStage.innerStepConfig.current += 1;
+      if (
+        findStage.innerStepConfig.current ===
+        findStage.innerStepConfig.items.length
+      ) {
+        await this.completeStage(targetId, stageId);
+      }
       await res.save();
       return "步骤已完成";
     } catch (e) {
@@ -130,4 +139,6 @@ export class TargetService {
       ] as Stage[],
     };
   }
+
+  updateStageStatus() {}
 }

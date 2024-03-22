@@ -14,7 +14,7 @@ import { CourseService } from "./course.service";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { AuthWrappedRequest } from "@/utils";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { DeleteCourseDto } from "./dto/delete-course.dto";
+import { DeleteCourseDto, UpdateWeekDto } from "./dto/delete-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 
 @UseGuards(JwtAuthGuard)
@@ -49,5 +49,13 @@ export class CourseController {
     @Request() req: AuthWrappedRequest,
   ) {
     return this.courseService.delete(deleteCourseDto, req.user._id);
+  }
+
+  @Post("updateWeek")
+  updateWeek(
+    @Body() updateWeekDto: UpdateWeekDto,
+    @Request() req: AuthWrappedRequest,
+  ) {
+    return this.courseService.updateWeek(updateWeekDto, req.user._id);
   }
 }

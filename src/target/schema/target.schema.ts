@@ -55,7 +55,7 @@ export class Target {
               type: [
                 {
                   title: { type: String, required: true },
-                  description: { type: String, required: true },
+                  description: { type: String },
                 },
               ],
             },

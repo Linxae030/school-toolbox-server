@@ -46,6 +46,13 @@ export class Course {
   user: mongoose.Schema.Types.ObjectId;
 
   @Prop({
+    description: "当前周数",
+    required: true,
+    type: String,
+  })
+  currentWeek: string;
+
+  @Prop({
     required: true,
     type: [weekDayCourseType],
   })

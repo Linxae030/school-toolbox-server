@@ -11,7 +11,7 @@ import {
   genBaseSuccess,
   genOmitKey,
 } from "@/utils";
-import { DeleteCourseDto } from "./dto/delete-course.dto";
+import { DeleteCourseDto, UpdateWeekDto } from "./dto/delete-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 
 @Injectable()
@@ -88,6 +88,30 @@ export class CourseService {
       if (deleteIndex === -1) return genBaseErr("课程不存在");
       courseInfo[week].splice(deleteIndex, 1);
       return genBaseSuccess(await courseInfo.save(), "删除成功");
+    } catch (e) {
+      return genBaseErr(e);
+    }
+  }
+
+  async updateWeek(updateWeekDto: UpdateWeekDto, userId: string) {
+    const { week } = updateWeekDto;
+    console.log("week", week);
+    try {
+      await this.CourseModel.findOneAndUpdate(
+        {
+          user: userId,
+        },
+        {
+          $set: {
+            currentWeek: week,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      return "更新成功";
     } catch (e) {
       return genBaseErr(e);
     }
