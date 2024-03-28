@@ -80,7 +80,7 @@ export class TargetService {
       const findStageIndex = res.stages.findIndex(
         (stage) => stage._id.toString() === stageId,
       );
-      if (!findStageIndex) {
+      if (findStageIndex === -1) {
         return genBaseErr("未找到该阶段");
       }
       /** 完成stage */
