@@ -4,9 +4,9 @@ import { LinkIconDisplayModeEnum } from "./types";
 
 @Schema({
   timestamps: true,
-  collection: "link",
+  collection: "file",
 })
-export class Link {
+export class File {
   @Prop({
     description: "所属用户",
     required: true,
@@ -17,35 +17,39 @@ export class Link {
   user: mongoose.Schema.Types.ObjectId;
 
   @Prop({
-    description: "链接名",
+    description: "文件名",
     required: true,
+    type: String,
   })
-  name: string;
+  fileName: string;
 
   @Prop({
-    description: "链接指向",
+    description: "文件包含标签",
     required: true,
+    ref: "fileTag",
+    type: [mongoose.Schema.Types.ObjectId],
   })
-  direction: string;
+  tags: mongoose.Schema.Types.ObjectId[];
 
   @Prop({
-    description: "所属分类",
+    description: "文件路径",
     required: true,
-    ref: "LinkCate",
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
   })
-  categoryId: mongoose.Schema.Types.ObjectId;
+  filePath: string;
 
   @Prop({
-    description: "背景颜色",
+    description: "文件大小",
     required: true,
+    type: Number,
   })
-  bgColor: string;
+  fileSize: number;
 
   @Prop({
-    description: "链接图标展示方式",
-    default: LinkIconDisplayModeEnum.FirstChar,
+    description: "文件类型",
+    required: true,
+    type: String,
   })
-  displayMode: LinkIconDisplayModeEnum;
+  fileType: string;
 }
-export const LinkSchema = SchemaFactory.createForClass(Link);
+export const FileSchema = SchemaFactory.createForClass(File);

@@ -7,4 +7,5 @@ export const OMIT_KEY_PRESET = {
   ID_V: ["_id", "__v"],
   ID: ["_id"],
   V: ["__v"],
+  V_USER: ["__V,user"],
 };

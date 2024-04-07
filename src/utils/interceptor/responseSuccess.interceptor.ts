@@ -27,8 +27,8 @@ export class ResponseSuccessInterceptor<T>
       map((response) => {
         return {
           code: 1,
-          msg: response.msg ?? (response as unknown as string),
-          data: response.data,
+          msg: response?.msg ?? (response as unknown as string),
+          data: response?.data ?? ({} as any),
         };
       }),
     );

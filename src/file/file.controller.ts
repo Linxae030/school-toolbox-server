@@ -1,21 +1,22 @@
+/* eslint-disable no-undef */
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UseGuards,
   Request,
   Query,
+  UploadedFiles,
+  Res,
+  Get,
 } from "@nestjs/common";
+import { Response } from "express";
+import { join } from "path";
 import { FileService } from "./file.service";
-import { CreateFileDto } from "./dto/create-file.dto";
 import { UpdateFileDto } from "./dto/update-file.dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { CreateResumeDto } from "@/resume/dto/create-resume.dto";
-import { AuthWrappedRequest } from "@/utils";
+import { AuthWrappedRequest, Public } from "@/utils";
+import { upload } from "@/utils/decorator/upload";
 
 @UseGuards(JwtAuthGuard)
 @Controller("file")
@@ -45,28 +46,56 @@ export class FileController {
     return this.fileService.deleteTag(_id);
   }
 
-  @Post()
-  create(@Body() createFileDto: CreateFileDto) {
-    return this.fileService.create(createFileDto);
+  @Post("uploadFiles")
+  @upload("files")
+  uploadFiles(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body("tags") tags: string[],
+    @Request() req: AuthWrappedRequest,
+  ) {
+    console.log(this);
+
+    return this.fileService.uploadFiles(files, tags, req.user._id);
   }
 
-  @Get()
-  findAll() {
-    return this.fileService.findAll();
+  @Post("findFile")
+  findFile(@Query("_id") _id: string) {
+    return this.fileService.findFile(_id);
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.fileService.findOne(+id);
+  @Post("findFiles")
+  findFiles(@Request() req: AuthWrappedRequest, @Body("tags") tags: string[]) {
+    return this.fileService.findFiles(req.user._id, tags);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.fileService.update(+id, updateFileDto);
+  @Post("deleteFile")
+  deleteFile(@Query("_id") _id: string) {
+    return this.fileService.deleteFile(_id);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.fileService.remove(+id);
+  @Post("deleteFiles")
+  deleteFiles(@Body("ids") ids: string[]) {
+    return this.fileService.deleteFiles(ids);
+  }
+
+  @Public()
+  @Get("downloadFile")
+  downloadFile(@Query("_id") _id: string, @Res() res: Response) {
+    return this.fileService.downloadFile(_id, res);
+  }
+
+  @Public()
+  @Post("downloadFiles")
+  downloadFiles(@Body("ids") ids: string[], @Res() res: Response) {
+    console.log("ids", ids);
+    return this.fileService.downloadFiles(ids, res);
+  }
+
+  @Post("checkFileUnique")
+  checkFileUnique(
+    @Request() req: AuthWrappedRequest,
+    @Body("fileNames") fileNames: string[],
+  ) {
+    return this.fileService.checkFileUnique(fileNames, req.user._id);
   }
 }
