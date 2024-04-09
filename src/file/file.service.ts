@@ -1,18 +1,18 @@
 /* eslint-disable no-undef */
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Mongoose, Schema, Types } from "mongoose";
 import * as _ from "lodash";
 import { readFile, unlink } from "fs/promises";
 import { Response } from "express";
-import { join } from "path";
+import path, { join } from "path";
 import { Readable } from "stream";
 import { UpdateFileDto } from "./dto/update-file.dto";
 import { User } from "@/user/schema/user.schema";
 import { FileTag } from "./schema/fileTag.schema";
 import { genBaseErr, genBaseSuccess, OMIT_KEY_PRESET } from "@/utils";
 import { File } from "./schema/file.schema";
-import { genOmitKey } from "../utils/utils";
+import { extractFileExtension, genOmitKey } from "../utils/utils";
 
 @Injectable()
 export class FileService {
@@ -96,10 +96,13 @@ export class FileService {
     try {
       for (const file of files) {
         const { originalname, mimetype, path, size } = file;
+        const fileOriginalName = Buffer.from(originalname, "latin1").toString(
+          "utf-8",
+        );
         await this.FileModel.create({
           user: userId,
           tags,
-          fileName: originalname,
+          fileName: fileOriginalName,
           filePath: path,
           fileSize: size,
           fileType: mimetype,
@@ -139,6 +142,9 @@ export class FileService {
       if (tags.length === 0) {
         res = await this.FileModel.find({
           user: userId,
+        }).populate({
+          path: "tags",
+          model: this.FileTagModel,
         });
       } else {
         res = await this.FileModel.find(
@@ -146,10 +152,13 @@ export class FileService {
             user: userId,
           },
           genOmitKey(OMIT_KEY_PRESET.V_USER),
-        );
+        ).populate({
+          path: "tags",
+          model: this.FileTagModel,
+        });
         res = res.filter((file) =>
           tags.every((tag) =>
-            file.tags.map((tag) => tag.toString()).includes(tag),
+            file.tags.map((tag) => (tag as any)._id.toString()).includes(tag),
           ),
         );
       }
@@ -240,6 +249,32 @@ export class FileService {
         if (file.length) repeatNames.push(file[0]?.fileName);
       }
       return genBaseSuccess({ repeatNames });
+    } catch (e) {
+      return genBaseErr(e);
+    }
+  }
+
+  async updateFile(
+    _id: string,
+    tags: string[],
+    fileName: string,
+    userId: string,
+  ) {
+    try {
+      const findFile = await this.FileModel.findById(_id);
+      if (!findFile) return genBaseErr("未找到该文件！");
+      if (findFile.fileName !== fileName) {
+        const repeatedNameFile = await this.FileModel.find({
+          user: userId,
+          fileName,
+        });
+        if (repeatedNameFile.length !== 0)
+          return genBaseErr("修改后存在同名文件，请重新输入！");
+        findFile.fileName = fileName;
+      }
+      findFile.tags = tags as any;
+      await findFile.save();
+      return "更新成功";
     } catch (e) {
       return genBaseErr(e);
     }

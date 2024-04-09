@@ -53,8 +53,6 @@ export class FileController {
     @Body("tags") tags: string[],
     @Request() req: AuthWrappedRequest,
   ) {
-    console.log(this);
-
     return this.fileService.uploadFiles(files, tags, req.user._id);
   }
 
@@ -87,7 +85,6 @@ export class FileController {
   @Public()
   @Post("downloadFiles")
   downloadFiles(@Body("ids") ids: string[], @Res() res: Response) {
-    console.log("ids", ids);
     return this.fileService.downloadFiles(ids, res);
   }
 
@@ -97,5 +94,15 @@ export class FileController {
     @Body("fileNames") fileNames: string[],
   ) {
     return this.fileService.checkFileUnique(fileNames, req.user._id);
+  }
+
+  @Post("updateFile")
+  updateFile(
+    @Request() req: AuthWrappedRequest,
+    @Body("_id") _id: string,
+    @Body("tags") tags: string[],
+    @Body("fileName") fileName: string,
+  ) {
+    return this.fileService.updateFile(_id, tags, fileName, req.user._id);
   }
 }
